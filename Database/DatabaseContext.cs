@@ -21,8 +21,7 @@ namespace TTBWeb_Asp.net.Database
    
         public static string GetConnection()
         {
-            var x = $"{Path.Combine(Directory.GetCurrentDirectory(), new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json").Build().GetSection("AppSettings").GetSection("DatabaseFile").Value)}";
-            return x;
+            return $"{Path.Combine(Directory.GetCurrentDirectory(), new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json").Build().GetSection("AppSettings").GetSection("DatabaseFile").Value)}";
         }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
