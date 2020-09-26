@@ -22,29 +22,29 @@ namespace TTBWeb_Asp.net.Database
             SetProviderServices("System.Data.SQLite", (DbProviderServices)SQLiteProviderFactory.Instance.GetService(typeof(DbProviderServices)));
         }
 
-        public List<MovementModel> GetFirstFiveMovements()
+        public List<Movement> GetFirstFiveMovements()
         {
-            DatabaseContext context = new DatabaseContext();
+            SQLiteDatabaseContext context = new SQLiteDatabaseContext();
             var movements = context.MovementModels.SqlQuery("SELECT * FROM movements LIMIT 5");
             return movements.ToList();
        
         }
 
-        public List<MovementModel> GetMovementsWithNameLike(MovementModel movement)
+        public List<Movement> GetMovementsWithNameLike(Movement movement)
         {
-            DatabaseContext context = new DatabaseContext();
+            SQLiteDatabaseContext context = new SQLiteDatabaseContext();
             var movements = context.MovementModels.Where(m => m.Name.Contains(movement.Name)).ToList();
             return movements;
         }
-        public List<MovementModel> GetMovementsWithName(MovementModel movement)
+        public List<Movement> GetMovementsWithName(Movement movement)
         {
-            DatabaseContext context = new DatabaseContext();
+            SQLiteDatabaseContext context = new SQLiteDatabaseContext();
             var movements = context.MovementModels.Where(m => m.Name==movement.Name).ToList();
             return movements;
         }
-        internal void AddMovement(MovementModel movement)
+        internal void AddMovement(Movement movement)
         {
-            DatabaseContext context = new DatabaseContext();
+            SQLiteDatabaseContext context = new SQLiteDatabaseContext();
             context.MovementModels.Add(movement);
             context.SaveChanges();
         }
@@ -53,15 +53,15 @@ namespace TTBWeb_Asp.net.Database
         {
             if (CreateDatabaseIfNotExists(configuration)) return;
 
-            DatabaseContext context = new DatabaseContext();
+            SQLiteDatabaseContext context = new SQLiteDatabaseContext();
 
             var exercisesString = File.ReadAllLines(configuration.GetSection("AppSettings").GetSection("MovementFile").Value);
-            List<MovementModel> movements = new List<MovementModel>();
+            List<Movement> movements = new List<Movement>();
             for (int i = 0; i < exercisesString.Length; i++)
             {
                 var splitMovementString = exercisesString[i].Split(",");
 
-                movements.Add(new MovementModel(splitMovementString[0].Trim(), splitMovementString[1].Trim()));
+                movements.Add(new Movement(splitMovementString[0].Trim(), splitMovementString[1].Trim()));
             }
             context.MovementModels.AddRange(movements);
             context.SaveChanges();

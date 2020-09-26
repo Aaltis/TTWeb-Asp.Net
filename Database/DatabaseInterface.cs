@@ -6,10 +6,9 @@ namespace TTBWeb_Asp.net.Database
 {
     interface DatabaseInterface
     {
-        public void InitDatabase(IConfiguration configuration);
 
-        public List<MovementModel> GetFirstFiveMovements();
-        public List<MovementModel> GetMovementsWithNameLike(MovementModel movement);
+        public List<Movement> GetFirstFiveMovements();
+        public List<Movement> GetMovementsWithNameLike(Movement movement);
 
     }
 }

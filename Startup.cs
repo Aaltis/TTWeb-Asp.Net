@@ -1,4 +1,3 @@
-using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -8,9 +7,8 @@ using Microsoft.AspNetCore.Http;
 using JavaScriptEngineSwitcher.V8;
 using JavaScriptEngineSwitcher.Extensions.MsDependencyInjection;
 using React.AspNet;
-using System.IO;
-using System.Data.SQLite;
 using TTBWeb_Asp.net.Database;
+using Microsoft.EntityFrameworkCore;
 
 namespace TTBWeb_Asp.net
 {
@@ -21,14 +19,17 @@ namespace TTBWeb_Asp.net
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            SqlLiteDatabaseImplementation sqlDatabase = new SqlLiteDatabaseImplementation();
-            sqlDatabase.InitDatabase(Configuration);
         }
        
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            
+            services.AddDbContext<MovementContext>(options=>options.UseNpgsql(Configuration.GetConnectionString("PostgreSql")));
+            
+            MovementContext.SeedMovements(Configuration);
+
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddReact();
 
@@ -38,6 +39,7 @@ namespace TTBWeb_Asp.net
               .AddV8();
 
             services.AddControllersWithViews();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SQLite;
-using System.IO;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using TTBWeb_Asp.net.Database;
@@ -11,12 +8,10 @@ namespace TTBWeb_Asp.net.Controllers
 {
     public class MovementController : Controller
     {
-        private readonly AppSettings _appSettings;
-        private readonly SqlLiteDatabaseImplementation database;
-        public MovementController(IOptions<AppSettings> appSettings)
+        private readonly MovementContext _movementContext;
+        public MovementController(MovementContext movementContext, IOptions<AppSettings> appSettings)
         {
-            _appSettings = appSettings.Value;
-            database = new SqlLiteDatabaseImplementation();
+            _movementContext = movementContext;
         }
 
         public IActionResult Index()
@@ -26,16 +21,17 @@ namespace TTBWeb_Asp.net.Controllers
 
         [Route("movements")]
         [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
-        public ActionResult Movements(MovementModel movement)
+        public ActionResult Movements(Movement movement)
         {
-            var movements = new List<MovementModel>();
+            var movements = new List<Movement>();
             if (string.IsNullOrEmpty(movement.Name))
             {
-                movements = database.GetFirstFiveMovements();
+                movements = _movementContext.GetFirstFiveMovements();
+                //movements = database.Movements.FromSqlRaw<List<Movement>>("SELECT * FROM movements LIMIT 5").ToList();
             }
             else
             {
-                movements = database.GetMovementsWithNameLike(movement);
+                movements = _movementContext.GetMovementsWithNameLike(movement);
             }
             if (movements.Count != 0)
             {
@@ -47,10 +43,11 @@ namespace TTBWeb_Asp.net.Controllers
 
         [Route("movements/new")]
         [HttpPost]
-        public ActionResult AddMovement(MovementModel movement)
+        public ActionResult AddMovement(Movement movement)
         {
-            database.AddMovement(movement);
-            return Json(database.GetMovementsWithName(movement));
+            //  database.AddMovement(movement);
+            // return Json(database.GetMovementsWithName(movement));
+            return Json("0");
 
         }
 

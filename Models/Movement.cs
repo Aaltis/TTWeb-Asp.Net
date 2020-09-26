@@ -6,17 +6,17 @@ using System.Data;
 namespace TTBWeb_Asp.net.Models
 {
     [Table("movements")]
-    public class MovementModel
+    public class Movement
     {
         [Key]
         public int id { get; set; }
         public String Name { get; set; }
         public String Type { get; set; }
-        public MovementModel()
+        public Movement()
         {
 
         }
-        public MovementModel(string name, string type)
+        public Movement(string name, string type)
         {
             this.Name = name;
             this.Type = type;

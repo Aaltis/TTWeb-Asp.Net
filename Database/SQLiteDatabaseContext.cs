@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Common;
 using System.Data.Entity;
@@ -9,16 +10,16 @@ using TTBWeb_Asp.net.Models;
 
 namespace TTBWeb_Asp.net.Database
 {
-    class DatabaseContext : DbContext
+    class SQLiteDatabaseContext : DbContext
     {
-        public DatabaseContext() :
+        public SQLiteDatabaseContext() :
             base(new SQLiteConnection()
             {
                 ConnectionString = new SQLiteConnectionStringBuilder() { DataSource = GetConnection(), ForeignKeys = true }.ConnectionString
             }, true)
         {
         }
-   
+
         public static string GetConnection()
         {
             return $"{Path.Combine(Directory.GetCurrentDirectory(), new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json").Build().GetSection("AppSettings").GetSection("DatabaseFile").Value)}";
@@ -28,6 +29,7 @@ namespace TTBWeb_Asp.net.Database
             modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
             base.OnModelCreating(modelBuilder);
         }
-        public DbSet<MovementModel> MovementModels { get; set; }
+
+        public DbSet<Movement> MovementModels { get; set; }
     }
 }
